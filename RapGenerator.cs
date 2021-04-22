@@ -19,11 +19,11 @@ namespace RapTTS
     class RapGenerator
     {
         private bool isUsingYo = false;
-        private bool isSync = true;
+        private bool isSync = false;
         private bool isReadText = false;
 
         private string commentsFile = "Comments.txt";
-        private string beatFileFolder = "beat";
+        private string beatFileFolder = "beat/original";
         private string bgmFileFolder = "bgm";
 
         private int typeMidi = 0;
@@ -138,25 +138,26 @@ namespace RapTTS
         private void SetMusic()
         {
             //static midi
-            //typeMidi = 1;
-            //readMidi("Dove.txt");
+            typeMidi = 1;
+            readMidi("Pras.txt");
 
             //random midi
-            readRandomMidi();
+            //readRandomMidi();
 
             // static bgm
-            //typeMusic = 0;
-            //setBeat(400, 0);
-            //backingBeat("FreeBeats.wav");
+            typeMusic = 0;
+            setBeat(900, 0);
+            backingBeat("FreeBeats.wav");
 
             //random bgm
-            randomBackingBeat();
+            //randomBackingBeat();
 
             //Console.WriteLine(beatList.Length);
         }
 
         private void setBeat(double beatValue, int timeValue)
         {
+            //smaller beat value for faster rap
             beat = beatValue;
             setTimeP = timeValue;
         }
@@ -329,16 +330,21 @@ namespace RapTTS
 
         private void addSpeed()
         {
-            if (setTime > 600) {
-                setTime /= 2;
-            }
             if (setTime >= (beat * 1)) //1.0
             {
-                SpeechGenerator.rateSpeed = 0;
+                SpeechGenerator.rateSpeed = 1;
+            }
+            else if (setTime >= (beat * 0.75)) //0.75
+            {
+                SpeechGenerator.rateSpeed = 2;
             }
             else if (setTime >= (beat * 0.5)) //0.50
             {
                 SpeechGenerator.rateSpeed = 3;
+            }
+            else if (setTime >= (beat * 0.33)) //0.33
+            {
+                SpeechGenerator.rateSpeed = 4;
             }
             else if (setTime >= (beat * 0.25))
             {
@@ -346,7 +352,7 @@ namespace RapTTS
             }
             else
             {
-                SpeechGenerator.rateSpeed = 7;
+                SpeechGenerator.rateSpeed = 6;
             }
 
             checkWord();
@@ -358,16 +364,21 @@ namespace RapTTS
             {
                 if (isSync)
                 {
-                    SpeechGenerator.SpeakSync(rapQueue.Dequeue());
+                    //SpeechGenerator.SpeakSync(rapQueue.Dequeue());
                     //Thread.Sleep(setTime);
+                    Console.WriteLine("checkWord : " + setTime);
+                    SpeechGenerator.SpeakSyncAlt(rapQueue.Dequeue());
+                    Thread.Sleep(setTime);
+
                 }
                 else
                 {
-                    SpeechGenerator.speak_cont(rapQueue.Dequeue());
+                    //SpeechGenerator.speak_cont(rapQueue.Dequeue());
                     //Speech.speak_new2(rapQueue.Dequeue());
                     //SpeechGenerator.SpeakSyncAlt(rapQueue.Dequeue());
                     Console.WriteLine("checkWord : " + setTime);
                     //setTime *= 3;
+                    SpeechGenerator.SpeakAsyncAlt(rapQueue.Dequeue());
                     Thread.Sleep(setTime);
                 }
 

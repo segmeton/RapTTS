@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Speech.Synthesis;
 using System.Speech.AudioFormat;
+using System.Linq;
 
 namespace RapTTS
 {
@@ -14,10 +15,25 @@ namespace RapTTS
         public static int sni = 0;
         public static int voiceGender = 1;
         static Boolean isPause = false;
+        static List<SpeechSynthesizer> list_sync = new List<SpeechSynthesizer>();
 
         public static void Initialize()
         {
             synth[0] = new SpeechSynthesizer { Volume = vol, Rate = rateSpeed };
+            setVoice(voiceGender);
+            if (lang != "") { synth[0].SelectVoice(lang); }
+            isPause = false;
+        }
+
+        public static void InitializeList()
+        {
+            SpeechSynthesizer s = new SpeechSynthesizer { Volume = vol, Rate = rateSpeed };
+
+            list_sync.Add(s);
+            if (list_sync.Count > 5) { list_sync.First().Dispose(); list_sync.RemoveAt(0); }
+
+            synth[0] = s;
+
             setVoice(voiceGender);
             if (lang != "") { synth[0].SelectVoice(lang); }
             isPause = false;
@@ -47,6 +63,15 @@ namespace RapTTS
             Console.WriteLine("synth[" + sni + "] rateSpeed : " + synth[sni].Rate);
             synth[sni].Speak(s);
             sni++; if (sni > 1) { sni = 0; }
+        }
+
+        public static void SpeakAsyncAlt(string s)
+        {
+            InitializeList();
+            synth[0].Rate = rateSpeed;
+            Console.WriteLine("Word : " + s);
+            Console.WriteLine("synth[0] rateSpeed : " + synth[sni].Rate);
+            synth[0].SpeakAsync(s);
         }
 
         public static void stop()
