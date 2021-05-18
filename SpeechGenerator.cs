@@ -19,14 +19,8 @@ namespace RapTTS
 
         public static void Initialize()
         {
-            synth[0] = new SpeechSynthesizer { Volume = vol, Rate = rateSpeed };
-            setVoice(voiceGender);
-            if (lang != "") { synth[0].SelectVoice(lang); }
-            isPause = false;
-        }
+            //synth[0] = new SpeechSynthesizer { Volume = vol, Rate = rateSpeed };
 
-        public static void InitializeList()
-        {
             SpeechSynthesizer s = new SpeechSynthesizer { Volume = vol, Rate = rateSpeed };
 
             list_sync.Add(s);
@@ -48,8 +42,10 @@ namespace RapTTS
 
         public static void speak_cont(string s)
         {
-            synth[0].Rate = rateSpeed;
-            Console.WriteLine("synth[0] rateSpeed : " + synth[sni].Rate);
+            //synth[0].Rate = rateSpeed;
+            Initialize();
+            Console.WriteLine("synth[0] rateSpeed : " + synth[0].Rate);
+            Console.WriteLine("Word : " + s);
             synth[0].SpeakAsync(s);
         }
 
@@ -63,15 +59,6 @@ namespace RapTTS
             Console.WriteLine("synth[" + sni + "] rateSpeed : " + synth[sni].Rate);
             synth[sni].Speak(s);
             sni++; if (sni > 1) { sni = 0; }
-        }
-
-        public static void SpeakAsyncAlt(string s)
-        {
-            InitializeList();
-            synth[0].Rate = rateSpeed;
-            Console.WriteLine("Word : " + s);
-            Console.WriteLine("synth[0] rateSpeed : " + synth[sni].Rate);
-            synth[0].SpeakAsync(s);
         }
 
         public static void stop()

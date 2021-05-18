@@ -20,10 +20,10 @@ namespace RapTTS
     {
         private bool isUsingYo = false;
         private bool isSync = false;
-        private bool isReadText = false;
+        private bool isReadText = true;
 
         private string commentsFile = "Comments.txt";
-        private string beatFileFolder = "beat/original";
+        private string beatFileFolder = "beat";
         private string bgmFileFolder = "bgm";
 
         private int typeMidi = 0;
@@ -49,7 +49,7 @@ namespace RapTTS
 
 
         private string baseDir = Directory.GetParent(Environment.CurrentDirectory).Parent.FullName;
-        
+
 
         public RapGenerator()
         {
@@ -71,7 +71,7 @@ namespace RapTTS
                 //rap
 
                 SetMusic();
-                //Thread.Sleep(setTimeP);
+                Thread.Sleep(setTimeP);
                 Rap();
             }
             else
@@ -90,14 +90,19 @@ namespace RapTTS
         {
             if (isReadText)
             {
+                Random rnd = new Random();
+                int r = rnd.Next(1, 5);
+                
+                commentsFile = $"sukiyaki test {r}.txt";
+                Console.WriteLine($"template {r} {commentsFile}");
                 string path = $"{baseDir}/text/{commentsFile}";
                 string[] lines = File.ReadAllLines(path);
-                foreach(string line in lines)
+                foreach (string line in lines)
                 {
                     commentQueue.Enqueue(line);
                 }
             }
-            else 
+            else
             {
                 thread = new Thread(StartConnection);
                 thread.Start();
@@ -139,15 +144,15 @@ namespace RapTTS
         {
             //static midi
             typeMidi = 1;
-            readMidi("Pras.txt");
-
+            readMidi("sukiyaki converted.txt");
+            //Console.WriteLine("set dove-old");
             //random midi
             //readRandomMidi();
 
             // static bgm
             typeMusic = 0;
-            setBeat(900, 0);
-            backingBeat("FreeBeats.wav");
+            setBeat(450, 800);
+            backingBeat("sukiyaki_mod.wav");
 
             //random bgm
             //randomBackingBeat();
@@ -157,7 +162,6 @@ namespace RapTTS
 
         private void setBeat(double beatValue, int timeValue)
         {
-            //smaller beat value for faster rap
             beat = beatValue;
             setTimeP = timeValue;
         }
@@ -364,21 +368,16 @@ namespace RapTTS
             {
                 if (isSync)
                 {
-                    //SpeechGenerator.SpeakSync(rapQueue.Dequeue());
+                    SpeechGenerator.SpeakSync(rapQueue.Dequeue());
                     //Thread.Sleep(setTime);
-                    Console.WriteLine("checkWord : " + setTime);
-                    SpeechGenerator.SpeakSyncAlt(rapQueue.Dequeue());
-                    Thread.Sleep(setTime);
-
                 }
                 else
                 {
-                    //SpeechGenerator.speak_cont(rapQueue.Dequeue());
+                    SpeechGenerator.speak_cont(rapQueue.Dequeue());
                     //Speech.speak_new2(rapQueue.Dequeue());
                     //SpeechGenerator.SpeakSyncAlt(rapQueue.Dequeue());
                     Console.WriteLine("checkWord : " + setTime);
                     //setTime *= 3;
-                    SpeechGenerator.SpeakAsyncAlt(rapQueue.Dequeue());
                     Thread.Sleep(setTime);
                 }
 
