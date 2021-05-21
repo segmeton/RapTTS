@@ -151,7 +151,10 @@ namespace RapTTS
 
             // static bgm
             typeMusic = 0;
-            setBeat(450, 800);
+            //180
+            //136bpm -> online analyzer https://getsongbpm.com/tools/audio
+            //4 beats = 3.529s
+            setBeat(250, 875);
             backingBeat("sukiyaki_mod.wav");
 
             //random bgm
